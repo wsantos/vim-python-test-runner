@@ -57,11 +57,9 @@ def run_desired_command_for_os(command_to_run):
 
 def main():
     current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
-    try:
-        command_to_run = get_proper_command(vim.eval("a:command_to_run"), current_directory)
-    except Exception as e:
-        print(e)
+    command_to_run = get_proper_command(vim.eval("a:command_to_run"), current_directory)
     run_desired_command_for_os(command_to_run)
+
     vim.command('silent make! | cw')
 
 vim.command('wall')
