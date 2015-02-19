@@ -33,12 +33,26 @@ def get_proper_command(desired_command, current_directory):
     }
     return FUNCTIONS[desired_command]()
 
+def activate_virtualenv():
+    if 'VIRTUAL_ENV' in os.environ:
+        project_base_dir = os.environ['VIRTUAL_ENV']
+        sys.path.insert(0, project_base_dir)
+        activate_this = os.path.join(project_base_dir, 'bin/activate')
+        return "source {0} &&".format(activate_this)
+    else:
+        return ""
+
 def run_desired_command_for_os(command_to_run):
+
+    virtual_env = activate_virtualenv()
+
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
-        vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
+        vim.command("{0}{1} 2>&1 | tee /tmp/test_results.txt".format(virtual_env, command_to_run))
     elif _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
-    elif _platform == 'darwin':
+        vim.command(":!{0} python {1} 2>&1 | tee /tmp/test_results.txt".format(virtual_env, command_to_run))
+    elif _platform == 'darwin' and virtual_env:
+        vim.command(":!{0} python {1} 2>&1 | tee /tmp/test_results.txt".format(virtual_env, command_to_run))
+    elif _platform == 'darwin': # TODO: Enable virtualenv with sudo
         vim.command(":!sudo python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
 
 def main():
@@ -54,4 +68,3 @@ vim.command('wall')
 main()
 endPython
 endfunction
-
