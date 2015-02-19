@@ -102,7 +102,9 @@ def get_app_name(current_dir):
     try:
         return [app.lstrip() for app in apps.split(",") if app.lstrip() in current_dir][0]
     except:
-        raise NoVimDjango
+        project_path = os.getcwd()[1:]
+        current_dir = current_dir.replace(project_path, '')
+        return os.path.dirname(current_dir[1:]).split(os.sep)[0]
 
 
 def get_dot_notation_path_to_test(current_dir):
