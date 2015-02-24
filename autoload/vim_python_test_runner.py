@@ -28,7 +28,10 @@ def get_command_to_run_the_current_file(current_dir):
     command_to_current_app = get_command_to_run_the_current_app(current_dir)
     path_to_tests = get_dot_notation_path_to_test(current_dir)
     file_name = get_file_name(current_dir)
-    cmd = "{}.{}.{}".format(command_to_current_app, path_to_tests, file_name)
+    if path_to_tests:
+        cmd = "{}.{}.{}".format(command_to_current_app, path_to_tests, file_name)
+    else:
+        cmd = "{}.{}".format(command_to_current_app, file_name)
     write_test_command_to_cache_file(cmd)
     return cmd
 
